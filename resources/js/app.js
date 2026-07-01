@@ -69,59 +69,38 @@ if (barChartElement) {
 const donutChartElement = document.getElementById('donutChart');
 
 if (donutChartElement) {
-    const ctx = donutChartElement.getContext('2d');
+    const dataValues = [50, 30, 20];
+    const labels = ['Baik', 'R. Ringan', 'R. Berat'];
+    const colors = ['#4b3f94', '#c9de64', '#e63946'];
 
-    new Chart(ctx, {
+    const myChart = new Chart(donutChartElement.getContext('2d'), {
         type: 'doughnut',
         data: {
-            labels: ['  Baik', '  R. Ringan', '  R. Berat'],
+            labels: labels,
             datasets: [{
-                data: [50, 30, 20],
-                backgroundColor: ['#4b3f94', '#c9de64', '#e63946'],
+                data: dataValues,
+                backgroundColor: colors,
                 borderWidth: 0,
-                borderRadius: 4,
+                cutout: '75%' // Dibuat sedikit lebih tipis agar elegan
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            // Perbesar nilai bottom di sini untuk memberi jarak fisik dari grafik ke bawah
-            layout: {
-                padding: { bottom: 0 }
-            },
             plugins: {
-                legend: {
-                    position: 'bottom',
-                    align: 'center',
-                    fullWidth: true,
-                    labels: {
-                        font: { family: 'Inter', size: 11, weight: 400 },
-                        usePointStyle: true,
-                        pointStyle: 'circle',
-                        // Padding ini mengontrol jarak vertikal legend dari titik terendah grafik
-                        padding: 20,
-                        boxWidth: 6,
-                        maxWidth: 300,
-                        generateLabels: (chart) => {
-                            const data = chart.data;
-                            return data.labels.map((label, i) => ({
-                                text: `${label} ${data.datasets[0].data[i]}%`,
-                                fillStyle: data.datasets[0].backgroundColor[i],
-                                pointStyle: 'circle'
-                            }));
-                        }
-                    }
-                },
-                tooltip: {
-                    backgroundColor: '#ffffff',
-                    titleColor: '#111827',
-                    bodyColor: '#6B7280',
-                    borderColor: '#E5E7EB',
-                    borderWidth: 1,
-                    padding: 10
-                }
-            },
-            cutout: '70%'
+                legend: { display: false } // MATIKAN LEGEND BAWAAN
+            }
         }
+    });
+
+    // Render Custom Legend
+    const legendContainer = document.getElementById('donutLegend');
+    labels.forEach((label, index) => {
+        legendContainer.innerHTML += `
+            <div class="flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full" style="background-color: ${colors[index]}"></span>
+                <span class="text-xs text-gray-600 font-medium">${label} ${dataValues[index]}%</span>
+            </div>
+        `;
     });
 }
