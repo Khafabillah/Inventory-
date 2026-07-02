@@ -28,7 +28,7 @@
     {{-- Charts --}}
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
         <div class="col-span-1 lg:col-span-8 p-6 bg-white rounded-2xl shadow-sm border border-gray-200 flex flex-col h-full">
-            <h3 class="text-lg font-medium text-gray-900 mb-4">Distribusi Aset per Ruangan</h3>
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Distribusi Aset per Ruangan</h3>
             <div class="flex-grow relative min-h-[250px]">
                 <canvas id="barChart"></canvas>
             </div>
