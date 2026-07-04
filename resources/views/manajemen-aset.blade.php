@@ -49,7 +49,7 @@
         <div class="flex gap-3 mb-6 items-stretch h-[46px]">
             <input type="text" placeholder="Search"
                 class="flex-1 rounded-full border border-gray-200 px-3 py-2 text-sm text-gray-700 focus:outline-none" />
-            <button type="button" class="rounded-[1.5rem] bg-[#D5E7FD] flex flex-col items-center justify-center px-4">
+            <button type="button" onclick="toggleModal('modalTambahAset')" class="rounded-[1.5rem] bg-[#D5E7FD] flex flex-col items-center justify-center px-4">
                 <span class="text-base font-bold leading-none text-[#006EC4]">+</span>
                 <span class="text-[11px] font-bold text-[#006EC4] leading-none">Tambah</span>
             </button>
@@ -128,7 +128,7 @@
                     @endforeach
                 </div>
             </div>
-            <button type="button" class="ml-25 inline-flex items-center gap-2 text-sm font-bold text-[#006EC4]">
+            <button type="button" onclick="toggleModal('modalTambahAset')" class="ml-25 inline-flex items-center gap-2 text-sm font-bold text-[#006EC4]">
                 <span class="text-[#FFCD29]">+</span>
                 Tambah Aset
             </button>
@@ -224,4 +224,67 @@
             </div>
         </div>
     </div>
+
+<x-modal id="modalTambahAset" title="Tambah Aset Baru">
+    <form class="space-y-4">
+        <div>
+            <label class="block text-sm text-gray-600 mb-1">Cabang Penempatan</label>
+            <select class="w-full border border-gray-200 rounded px-3 py-2 text-sm bg-white">
+                <option>Pilih Cabang</option>
+                <option>WML</option>
+                <option>WLD</option>
+                <option>WLS</option>
+            </select>
+        </div>
+
+        <div>
+            <label class="block text-sm text-gray-600 mb-1">Kategori</label>
+            <select class="w-full border border-gray-200 rounded px-3 py-2 text-sm bg-white">
+                <option>Pilih Kategori</option>
+                <option>Elektronik</option>
+                <option>Furniture</option>
+                <option>Mebel</option>
+            </select>
+        </div>
+
+        <div>
+            <label class="block text-sm text-gray-600 mb-1">Nama Aset</label>
+            <input type="text" class="w-full border border-gray-200 rounded px-3 py-2 text-sm" placeholder="Masukkan nama aset" />
+        </div>
+
+        <div>
+            <label class="block text-sm text-gray-600 mb-1">Ruangan</label>
+            <select class="w-full border border-gray-200 rounded px-3 py-2 text-sm bg-white">
+                <option>Pilih Ruangan</option>
+                <option>Showroom</option>
+                <option>Office 1</option>
+                <option>Gudang</option>
+            </select>
+        </div>
+
+        <div>
+            <label class="block text-sm text-gray-600 mb-1">Kondisi</label>
+            <select class="w-full border border-gray-200 rounded px-3 py-2 text-sm bg-white">
+                <option>Pilih Kondisi</option>
+                <option>Baik</option>
+                <option>Kurang Baik</option>
+                <option>Rusak</option>
+            </select>
+        </div>
+
+        <div class="flex items-center justify-end gap-3 pt-4">
+            <button type="button" onclick="toggleModal('modalTambahAset')" class="px-4 py-2 bg-gray-200 text-gray-700 rounded">Batal</button>
+            <button type="submit" class="px-4 py-2 bg-[#006EC4] text-white rounded">Simpan</button>
+        </div>
+    </form>
+</x-modal>
+
+<script>
+    function toggleModal(id) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.classList.toggle('hidden');
+        el.classList.toggle('flex');
+    }
+</script>
 @endsection

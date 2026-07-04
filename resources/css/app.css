@@ -17,3 +17,12 @@ button, a, input {
     user-select: none;
     -webkit-user-select: none;
 }
+
+/* Tambahkan di bagian paling bawah app.css Anda */
+@utility scrollbar-hide {
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
