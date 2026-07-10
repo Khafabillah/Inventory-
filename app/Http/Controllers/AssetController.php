@@ -90,5 +90,33 @@ class AssetController extends Controller
         // 4. Kembali dengan pesan sukses
         return back()->with('success', 'Data aset berhasil diperbarui!');
     }
+
+    public function destroy($id)
+    {
+        $asset = Asset::findOrFail($id);
+        $asset->delete();
+
+        return back()->with('success', 'Data aset berhasil dihapus secara permanen!');
+    }
+
+    public function mutasi(Request $request, $id)
+    {
+        $request->validate([
+            'room_id' => 'required|exists:rooms,id',
+            'keterangan' => 'required|string',
+        ]);
+
+        $asset = Asset::findOrFail($id);
+
+        // Update ruangan ke ruangan baru
+        $asset->update([
+            'room_id' => $request->room_id
+        ]);
+
+        // TODO NANTI: Jika Anda sudah punya tabel khusus 'mutations' / log mutasi,
+        // Insert datanya di sini: Mutation::create(['asset_id' => $id, 'notes' => $request->keterangan...])
+
+        return back()->with('success', 'Aset berhasil dimutasi ke ruangan baru!');
+    }
 }
 

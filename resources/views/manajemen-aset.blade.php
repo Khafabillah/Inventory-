@@ -80,6 +80,7 @@
                                 <div id="dropdown-{{ $item->id }}"
                                     class="hidden absolute right-0 top-6 mt-1 w-32 bg-white rounded-lg shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border border-gray-100 z-50 overflow-hidden">
                                     <div class="py-1">
+                                        {{-- Cetak QR --}}
                                         <button type="button"
                                             onclick="openQrModal('{{ $item->asset_code }}', '{{ $item->name }}', '{{ $item->room->branch->code ?? '' }} - {{ $item->room->branch->name ?? 'Cabang' }}'); toggleDropdown('dropdown-{{ $item->id }}')"
                                             class="w-full text-left px-3 py-2 text-xs font-medium text-gray-600 hover:bg-blue-50 hover:text-blue-600 flex items-center gap-2">
@@ -101,7 +102,13 @@
                                             </svg>
                                             Cetak QR
                                         </button>
-                                        <button type="button"
+
+                                        {{-- Edit Mobile --}}
+                                        <button type="button" data-id="{{ $item->id }}"
+                                            data-code="{{ $item->asset_code }}" data-name="{{ $item->name }}"
+                                            data-category="{{ $item->category_id }}" data-room="{{ $item->room_id }}"
+                                            data-condition="{{ $item->condition }}"
+                                            onclick="openEditModal(this); toggleDropdown('dropdown-{{ $item->id }}')"
                                             class="w-full text-left px-3 py-2 text-xs font-medium text-gray-600 hover:bg-blue-50 hover:text-blue-600 flex items-center gap-2">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -112,11 +119,16 @@
                                             </svg>
                                             Edit
                                         </button>
-                                        <button type="button"
+
+                                        {{-- Mutasi Mobile --}}
+                                        <button type="button" data-id="{{ $item->id }}"
+                                            data-code="{{ $item->asset_code }}" data-name="{{ $item->name }}"
+                                            data-room-name="{{ $item->room->name ?? '-' }} ({{ $item->room->branch->code ?? '-' }})"
+                                            onclick="openMutasiModal(this); toggleDropdown('dropdown-{{ $item->id }}')"
                                             class="w-full text-left px-3 py-2 text-xs font-medium text-gray-600 hover:bg-green-50 hover:text-green-600 flex items-center gap-2">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round">
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                                 <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2" />
                                                 <path d="M15 18H9" />
                                                 <path
@@ -126,7 +138,11 @@
                                             </svg>
                                             Mutasi
                                         </button>
-                                        <button type="button"
+
+                                        {{-- Hapus Mobile --}}
+                                        <button type="button" data-id="{{ $item->id }}"
+                                            data-name="{{ $item->asset_code }} - {{ $item->name }}"
+                                            onclick="openDeleteModal(this); toggleDropdown('dropdown-{{ $item->id }}')"
                                             class="w-full text-left px-3 py-2 text-xs font-medium text-gray-600 hover:bg-red-50 hover:text-red-600 flex items-center gap-2">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -259,7 +275,12 @@
                                     </svg>
                                 </button>
                                 <div class="flex justify-center gap-3 text-gray-500">
-                                    <button title="Edit" class="cursor-pointer hover:text-blue-600 transition-colors">
+                                    {{-- Edit Desktop --}}
+                                    <button type="button" title="Edit" data-id="{{ $item->id }}"
+                                        data-code="{{ $item->asset_code }}" data-name="{{ $item->name }}"
+                                        data-category="{{ $item->category_id }}" data-room="{{ $item->room_id }}"
+                                        data-condition="{{ $item->condition }}" onclick="openEditModal(this)"
+                                        class="cursor-pointer hover:text-blue-600 transition-colors">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                             stroke-linecap="round" stroke-linejoin="round">
@@ -268,7 +289,12 @@
                                             <path d="m15 5 4 4" />
                                         </svg>
                                     </button>
-                                    <button title="Mutasi" class="cursor-pointer hover:text-green-600 transition-colors">
+                                    {{-- Mutasi Desktop --}}
+                                    <button type="button" title="Mutasi Aset" data-id="{{ $item->id }}"
+                                        data-code="{{ $item->asset_code }}" data-name="{{ $item->name }}"
+                                        data-room-name="{{ $item->room->name ?? '-' }} ({{ $item->room->branch->code ?? '-' }})"
+                                        onclick="openMutasiModal(this)"
+                                        class="cursor-pointer hover:text-green-600 transition-colors focus:outline-none p-1 rounded hover:bg-green-100">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                             stroke-linecap="round" stroke-linejoin="round">
@@ -280,7 +306,12 @@
                                             <circle cx="7" cy="18" r="2" />
                                         </svg>
                                     </button>
-                                    <button title="Hapus" class="cursor-pointer hover:text-red-600 transition-colors">
+
+                                    {{-- Hapus Desktop --}}
+                                    <button type="button" title="Hapus Aset" data-id="{{ $item->id }}"
+                                        data-name="{{ $item->asset_code }} - {{ $item->name }}"
+                                        onclick="openDeleteModal(this)"
+                                        class="cursor-pointer hover:text-red-600 transition-colors focus:outline-none p-1 rounded hover:bg-red-100">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                             stroke-linecap="round" stroke-linejoin="round">
@@ -307,10 +338,10 @@
         </div>
     </div>
 
+    {{-- MODAL TAMBAH ASET --}}
     <x-modal id="modalTambahAset" title="Tambah Aset Baru">
         <form action="{{ route('manajemen-aset.store') }}" method="POST" class="space-y-4">
             @csrf
-
             <div>
                 <label class="block text-sm text-gray-600 mb-1">Kode Aset</label>
                 <input type="text" disabled
@@ -318,7 +349,6 @@
                     placeholder="Otomatis Digenerate Sistem" />
                 <p class="text-[10px] text-gray-400 mt-1">*Kode aset dibuat otomatis oleh sistem</p>
             </div>
-
             <div>
                 <label class="block text-sm text-gray-600 mb-1">Kategori</label>
                 <select name="category_id" required
@@ -329,20 +359,102 @@
                     @endforeach
                 </select>
             </div>
-
             <div>
                 <label class="block text-sm text-gray-600 mb-1">Nama Aset</label>
                 <input type="text" name="name" required
                     class="w-full border border-gray-200 rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
                     placeholder="Contoh: Komputer Kasir" />
             </div>
-
             <div>
                 <label class="block text-sm text-gray-600 mb-1">Ruangan Penempatan</label>
                 <select name="room_id" required class="w-full border rounded px-3 py-2">
                     <option value="">Pilih Ruangan Penempatan</option>
+                    @foreach ($rooms->groupBy('branch.code') as $branchCode => $branchRooms)
+                        <optgroup label="Cabang {{ $branchCode }}">
+                            @foreach ($branchRooms as $ruangan)
+                                <option value="{{ $ruangan->id }}">{{ $ruangan->name }}</option>
+                            @endforeach
+                        </optgroup>
+                    @endforeach
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm text-gray-600 mb-1">Kondisi</label>
+                <select name="condition" required
+                    class="cursor-pointer w-full border border-gray-200 rounded px-3 py-2 text-sm bg-white focus:outline-none focus:border-blue-500">
+                    <option value="">Pilih Kondisi</option>
+                    <option value="Baik">Baik</option>
+                    <option value="Kurang Baik">Kurang Baik</option>
+                    <option value="Rusak">Rusak</option>
+                </select>
+            </div>
+            <div class="flex items-center justify-end gap-3 pt-4 border-t mt-4">
+                <button type="button" onclick="toggleModal('modalTambahAset')"
+                    class="cursor-pointer px-4 py-2 bg-gray-100 text-gray-700 rounded text-sm hover:bg-gray-200">Batal</button>
+                <button type="submit"
+                    class="cursor-pointer px-4 py-2 bg-[#006EC4] text-white rounded text-sm hover:bg-blue-700">Simpan
+                    Aset</button>
+            </div>
+        </form>
+    </x-modal>
 
-                    {{-- Loop untuk mengelompokkan ruangan berdasarkan kode cabangnya --}}
+    {{-- MODAL CETAK QR --}}
+    <x-modal id="modalCetakQR" title="Cetak Label QR Code">
+        <div class="flex flex-col items-center justify-center p-4">
+            <div id="printArea"
+                class="bg-white border border-gray-200 shadow-sm rounded-xl p-8 flex flex-col items-center justify-center w-[280px] mb-6">
+                <div class="font-bold text-gray-800 text-sm mb-4">Inventor<span class="text-[#FFCD29]">+</span></div>
+                <img id="qrImage" src="" alt="QR Code" class="mb-6 w-[120px] h-[120px]">
+                <div id="qrAssetCode" class="text-sm font-bold text-gray-900"></div>
+                <div id="qrAssetName" class="text-xs text-gray-500 mt-1"></div>
+                <div id="qrAssetBranch" class="text-xs text-[#006EC4] mt-2 font-medium"></div>
+            </div>
+            <div class="flex items-center justify-between gap-4 w-full px-2">
+                <button type="button" onclick="toggleModal('modalCetakQR')"
+                    class="cursor-pointer w-1/2 py-2.5 bg-[#A1A1AA] text-white font-bold rounded-md text-sm hover:bg-gray-500 transition-colors">
+                    Batal
+                </button>
+                <button type="button" onclick="printQR()"
+                    class="cursor-pointer w-1/2 py-2.5 bg-[#006EC4] text-white font-bold rounded-md text-sm hover:bg-blue-700 transition-colors">
+                    Cetak Label
+                </button>
+            </div>
+        </div>
+    </x-modal>
+
+    {{-- MODAL EDIT DATA ASET --}}
+    <x-modal id="modalEditAset" title="Edit Data Aset">
+        <form id="formEditAset" method="POST" class="space-y-4">
+            @csrf
+            @method('PUT')
+
+            <div>
+                <label class="block text-sm text-gray-600 mb-1">Kode Aset</label>
+                <input type="text" id="edit_asset_code" disabled
+                    class="w-full border border-gray-200 rounded px-3 py-2 text-sm bg-gray-100 text-gray-500 cursor-not-allowed" />
+            </div>
+
+            <div>
+                <label class="block text-sm text-gray-600 mb-1">Kategori</label>
+                <select name="category_id" id="edit_category_id" required
+                    class="cursor-pointer w-full border border-gray-200 rounded px-3 py-2 text-sm bg-white focus:outline-none focus:border-blue-500">
+                    <option value="">Pilih Kategori</option>
+                    @foreach ($categories as $kategori)
+                        <option value="{{ $kategori->id }}">{{ $kategori->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-sm text-gray-600 mb-1">Nama Aset</label>
+                <input type="text" name="name" id="edit_name" required
+                    class="w-full border border-gray-200 rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500" />
+            </div>
+
+            <div>
+                <label class="block text-sm text-gray-600 mb-1">Ruangan Penempatan</label>
+                <select name="room_id" id="edit_room_id" required class="w-full border rounded px-3 py-2">
+                    <option value="">Pilih Ruangan Penempatan</option>
                     @foreach ($rooms->groupBy('branch.code') as $branchCode => $branchRooms)
                         <optgroup label="Cabang {{ $branchCode }}">
                             @foreach ($branchRooms as $ruangan)
@@ -355,7 +467,7 @@
 
             <div>
                 <label class="block text-sm text-gray-600 mb-1">Kondisi</label>
-                <select name="condition" required
+                <select name="condition" id="edit_condition" required
                     class="cursor-pointer w-full border border-gray-200 rounded px-3 py-2 text-sm bg-white focus:outline-none focus:border-blue-500">
                     <option value="">Pilih Kondisi</option>
                     <option value="Baik">Baik</option>
@@ -365,43 +477,171 @@
             </div>
 
             <div class="flex items-center justify-end gap-3 pt-4 border-t mt-4">
-                <button type="button" onclick="toggleModal('modalTambahAset')"
+                <button type="button" onclick="toggleModal('modalEditAset')"
                     class="cursor-pointer px-4 py-2 bg-gray-100 text-gray-700 rounded text-sm hover:bg-gray-200">Batal</button>
                 <button type="submit"
                     class="cursor-pointer px-4 py-2 bg-[#006EC4] text-white rounded text-sm hover:bg-blue-700">Simpan
-                    Aset</button>
+                    Perubahan</button>
             </div>
         </form>
     </x-modal>
 
-    <x-modal id="modalCetakQR" title="Cetak Label QR Code">
-        <div class="flex flex-col items-center justify-center p-4">
+    {{-- MODAL MUTASI ASET --}}
+    <x-modal id="modalMutasiAset" title="Mutasi / Pindah Ruangan Aset">
+        <form id="formMutasiAset" method="POST" class="space-y-4">
+            @csrf
+            {{-- Gunakan POST, nanti di route kita sesuaikan --}}
 
-            {{-- Area Print --}}
-            <div id="printArea"
-                class="bg-white border border-gray-200 shadow-sm rounded-xl p-8 flex flex-col items-center justify-center w-[280px] mb-6">
-                <div class="font-bold text-gray-800 text-sm mb-4">Inventor<span class="text-[#FFCD29]">+</span></div>
-
-                {{-- Tag IMG ini akan menangkap gambar dinamis dari rute internal kita --}}
-                <img id="qrImage" src="" alt="QR Code" class="mb-6 w-[120px] h-[120px]">
-
-                <div id="qrAssetCode" class="text-sm font-bold text-gray-900"></div>
-                <div id="qrAssetName" class="text-xs text-gray-500 mt-1"></div>
-                <div id="qrAssetBranch" class="text-xs text-[#006EC4] mt-2 font-medium"></div>
+            <div class="bg-blue-50 p-3 rounded-lg border border-blue-100 mb-4">
+                <div class="text-xs text-blue-500 mb-1">Aset yang akan dimutasi:</div>
+                <div id="mutasi_asset_code" class="font-bold text-blue-700"></div>
+                <div id="mutasi_asset_name" class="text-sm text-blue-900"></div>
             </div>
 
-            {{-- Tombol Batal & Cetak --}}
-            <div class="flex items-center justify-between gap-4 w-full px-2">
-                <button type="button" onclick="toggleModal('modalCetakQR')"
-                    class="cursor-pointer w-1/2 py-2.5 bg-[#A1A1AA] text-white font-bold rounded-md text-sm hover:bg-gray-500 transition-colors">
-                    Batal
-                </button>
-                <button type="button" onclick="printQR()"
-                    class="cursor-pointer w-1/2 py-2.5 bg-[#006EC4] text-white font-bold rounded-md text-sm hover:bg-blue-700 transition-colors">
-                    Cetak Label
-                </button>
+            <div>
+                <label class="block text-sm text-gray-600 mb-1">Ruangan Saat Ini</label>
+                <input type="text" id="mutasi_current_room" disabled
+                    class="w-full border border-gray-200 rounded px-3 py-2 text-sm bg-gray-100 text-gray-500 cursor-not-allowed" />
             </div>
 
-        </div>
+            <div>
+                <label class="block text-sm font-bold text-gray-700 mb-1">Pindah Ke Ruangan Baru <span
+                        class="text-red-500">*</span></label>
+                <select name="room_id" required
+                    class="cursor-pointer w-full border border-gray-300 rounded px-3 py-2 text-sm bg-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+                    <option value="">Pilih Ruangan Tujuan</option>
+                    @foreach ($rooms->groupBy('branch.code') as $branchCode => $branchRooms)
+                        <optgroup label="Cabang {{ $branchCode }}">
+                            @foreach ($branchRooms as $ruangan)
+                                <option value="{{ $ruangan->id }}">{{ $ruangan->name }}</option>
+                            @endforeach
+                        </optgroup>
+                    @endforeach
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-sm text-gray-600 mb-1">Keterangan / Alasan Mutasi <span
+                        class="text-red-500">*</span></label>
+                <textarea name="keterangan" required rows="3"
+                    class="w-full border border-gray-200 rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
+                    placeholder="Contoh: Dipindahkan karena ruangan direnovasi..."></textarea>
+            </div>
+
+            <div class="flex items-center justify-end gap-3 pt-4 border-t mt-4">
+                <button type="button" onclick="toggleModal('modalMutasiAset')"
+                    class="cursor-pointer px-4 py-2 bg-gray-100 text-gray-700 rounded text-sm hover:bg-gray-200">Batal</button>
+                <button type="submit"
+                    class="cursor-pointer px-4 py-2 bg-green-600 text-white rounded text-sm hover:bg-green-700">Proses
+                    Mutasi</button>
+            </div>
+        </form>
     </x-modal>
+
+    {{-- MODAL HAPUS ASET --}}
+    <x-modal id="modalHapusAset" title="Konfirmasi Hapus Aset">
+        <form id="formHapusAset" method="POST">
+            @csrf
+            @method('DELETE')
+
+            <div class="flex flex-col items-center justify-center py-4 text-center">
+                <div class="bg-red-100 p-3 rounded-full mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-red-600" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                </div>
+                <h3 class="text-lg font-bold text-gray-900 mb-1">Hapus Aset Ini?</h3>
+                <p class="text-sm text-gray-500">Anda akan menghapus <br><strong id="delete_asset_name"
+                        class="text-red-600"></strong></p>
+                <p class="text-xs text-gray-400 mt-2">Tindakan ini tidak dapat dibatalkan dan data akan hilang permanen.
+                </p>
+            </div>
+
+            <div class="flex items-center justify-center gap-3 pt-4 border-t mt-2">
+                <button type="button" onclick="toggleModal('modalHapusAset')"
+                    class="cursor-pointer px-6 py-2 bg-gray-100 text-gray-700 font-medium rounded text-sm hover:bg-gray-200">Batal</button>
+                <button type="submit"
+                    class="cursor-pointer px-6 py-2 bg-red-600 text-white font-medium rounded text-sm hover:bg-red-700">Ya,
+                    Hapus Aset</button>
+            </div>
+        </form>
+    </x-modal>
+
+    {{-- SCRIPT MODAL EDIT (DEBUG MODE) --}}
+    <script>
+        window.openEditModal = function(button) {
+            // Kita pindahkan logika ke dalam fungsi yang memastikan elemen siap
+            try {
+                const id = button.getAttribute('data-id');
+                const code = button.getAttribute('data-code');
+                const name = button.getAttribute('data-name');
+                const categoryId = button.getAttribute('data-category');
+                const roomId = button.getAttribute('data-room');
+                const condition = button.getAttribute('data-condition');
+
+                const form = document.getElementById('formEditAset');
+                if (form) form.action = `/manajemen-aset/${id}`;
+
+                // Gunakan pengecekan elemen sebelum mengisi value
+                const fields = {
+                    'edit_asset_code': code,
+                    'edit_name': name,
+                    'edit_category_id': categoryId,
+                    'edit_room_id': roomId,
+                    'edit_condition': condition
+                };
+
+                for (const [id, value] of Object.entries(fields)) {
+                    const el = document.getElementById(id);
+                    if (el) el.value = value;
+                }
+
+                window.toggleModal('modalEditAset');
+
+            } catch (error) {
+                // Cukup log ke konsol, jangan pakai alert agar tidak mengganggu pengguna
+                console.error("Gagal membuka modal:", error);
+            }
+        };
+
+        // Fungsi untuk membuka Modal Mutasi
+        window.openMutasiModal = function(button) {
+            try {
+                const id = button.getAttribute('data-id');
+                const code = button.getAttribute('data-code');
+                const name = button.getAttribute('data-name');
+                const currentRoom = button.getAttribute('data-room-name');
+
+                const form = document.getElementById('formMutasiAset');
+                if (form) form.action = `/manajemen-aset/${id}/mutasi`; // Route tujuan mutasi
+
+                document.getElementById('mutasi_asset_code').innerText = code;
+                document.getElementById('mutasi_asset_name').innerText = name;
+                document.getElementById('mutasi_current_room').value = currentRoom;
+
+                window.toggleModal('modalMutasiAset');
+            } catch (error) {
+                console.error("Gagal membuka modal mutasi:", error);
+            }
+        };
+
+        // Fungsi untuk membuka Modal Hapus
+        window.openDeleteModal = function(button) {
+            try {
+                const id = button.getAttribute('data-id');
+                const name = button.getAttribute('data-name');
+
+                const form = document.getElementById('formHapusAset');
+                if (form) form.action = `/manajemen-aset/${id}`; // Route tujuan hapus
+
+                document.getElementById('delete_asset_name').innerText = name;
+
+                window.toggleModal('modalHapusAset');
+            } catch (error) {
+                console.error("Gagal membuka modal hapus:", error);
+            }
+        };
+    </script>
 @endsection

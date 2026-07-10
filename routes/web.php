@@ -105,3 +105,5 @@ Route::get('/aset/qr/{code}', function ($code) {
 
 // Rute untuk memproses update data aset
 Route::put('/manajemen-aset/{id}', [AssetController::class, 'update'])->name('manajemen-aset.update');
+Route::post('/manajemen-aset/{id}/mutasi', [AssetController::class, 'mutasi'])->name('manajemen-aset.mutasi');
+Route::delete('/manajemen-aset/{id}', [AssetController::class, 'destroy'])->name('manajemen-aset.destroy');
