@@ -19,8 +19,8 @@
             <span class="text-base">Manajemen Aset</span>
         </a>
 
-        <a href="#" class="flex items-center gap-4 px-5 py-4 rounded-2xl text-[#6388a7] hover:bg-white/50 hover:text-[#071437] font-semibold transition-all">
-            <svg class="w-6 h-6 text-[#006EC4]" viewBox="0 0 24 24"><path fill="currentColor" d="M19.704 8.588C17.64 9.276 14.917 9.667 12 9.667s-5.64-.391-7.704-1.08C3.47 8.313 2.674 7.965 2 7.526v4.305c0 1.841 4.477 3.333 10 3.333s10-1.492 10-3.333V7.525c-.674.44-1.469.787-2.297 1.063"/><path fill="currentColor" d="M22 15.022c-.674.439-1.469.787-2.297 1.062c-2.063.688-4.786 1.08-7.703 1.08s-5.64-.392-7.704-1.08C3.47 15.81 2.674 15.462 2 15.022v4.645C2 21.507 6.477 23 12 23s10-1.492 10-3.333zM12 7.667c-5.523 0-10-1.493-10-3.334V4.33C2.005 2.49 6.48 1 12 1c4.142 0 7.696.84 9.214 2.036c.506.399.786.837.786 1.297c0 1.841-4.477 3.334-10 3.334"/></svg>
+        <a href="/master-data/akun" class="flex items-center gap-4 px-5 py-4 {{ request()->is('master-data*') ? 'bg-white shadow-[0_4px_10px_rgba(0,0,0,0.05)] text-[#071437]' : 'text-[#6388a7] hover:bg-white/50 hover:text-[#071437]' }} rounded-2xl font-semibold transition-all">
+            <svg class="w-6 h-6 {{ request()->is('master-data*') ? 'text-[#FFCD29]' : 'text-[#006EC4]' }}" viewBox="0 0 24 24"><path fill="currentColor" d="M19.704 8.588C17.64 9.276 14.917 9.667 12 9.667s-5.64-.391-7.704-1.08C3.47 8.313 2.674 7.965 2 7.526v4.305c0 1.841 4.477 3.333 10 3.333s10-1.492 10-3.333V7.525c-.674.44-1.469.787-2.297 1.063"/><path fill="currentColor" d="M22 15.022c-.674.439-1.469.787-2.297 1.062c-2.063.688-4.786 1.08-7.703 1.08s-5.64-.392-7.704-1.08C3.47 15.81 2.674 15.462 2 15.022v4.645C2 21.507 6.477 23 12 23s10-1.492 10-3.333zM12 7.667c-5.523 0-10-1.493-10-3.334V4.33C2.005 2.49 6.48 1 12 1c4.142 0 7.696.84 9.214 2.036c.506.399.786.837.786 1.297c0 1.841-4.477 3.334-10 3.334"/></svg>
             <span class="text-base">Master Data</span>
         </a>
 

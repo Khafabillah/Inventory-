@@ -9,6 +9,7 @@ use App\Models\Branch;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\AssetController;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use App\Http\Controllers\UserController;
 
 Route::get('/login', function () {
     return view('auth.login');
@@ -107,3 +108,12 @@ Route::get('/aset/qr/{code}', function ($code) {
 Route::put('/manajemen-aset/{id}', [AssetController::class, 'update'])->name('manajemen-aset.update');
 Route::post('/manajemen-aset/{id}/mutasi', [AssetController::class, 'mutasi'])->name('manajemen-aset.mutasi');
 Route::delete('/manajemen-aset/{id}', [AssetController::class, 'destroy'])->name('manajemen-aset.destroy');
+
+
+// Halaman Utama Master Data Akun
+Route::get('/master-data/akun', [UserController::class, 'index'])->name('master.akun');
+
+// 3 Route ini yang diminta oleh Laravel untuk form di Modal
+Route::post('/master-data/akun', [UserController::class, 'store'])->name('master.akun.store');
+Route::put('/master-data/akun/{id}', [UserController::class, 'update'])->name('master.akun.update');
+Route::delete('/master-data/akun/{id}', [UserController::class, 'destroy'])->name('master.akun.destroy');

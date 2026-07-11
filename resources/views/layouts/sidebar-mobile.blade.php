@@ -30,9 +30,9 @@
             </a>
 
             {{-- Master Data --}}
-            <a href="#" class="flex items-center gap-4 py-3 border-l-4 border-transparent text-[#006EC4] active:bg-blue-300/30 active:scale-[0.98] transition-all">
-                <span class="ml-4 text-[#006EC4]">■</span>
-                <span class="font-medium text-gray-700">Master Data</span>
+            <a href="/master-data/akun" class="flex items-center gap-4 py-3 {{ request()->is('master-data*') ? 'border-l-4 border-[#FFCD29] bg-white/40' : 'border-l-4 border-transparent' }} rounded-r-lg active:scale-[0.98] transition-all">
+                <span class="ml-4 {{ request()->is('master-data*') ? 'text-[#FFCD29]' : 'text-[#006EC4]' }}">■</span>
+                <span class="font-medium {{ request()->is('master-data*') ? 'text-gray-900 font-bold' : 'text-gray-700' }}">Master Data</span>
             </a>
 
             {{-- Log Aktivitas --}}

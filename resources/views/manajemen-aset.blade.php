@@ -452,8 +452,12 @@
             </div>
 
             <div>
-                <label class="block text-sm text-gray-600 mb-1">Ruangan Penempatan</label>
-                <select name="room_id" id="edit_room_id" required class="w-full border rounded px-3 py-2">
+                <label class="block text-sm text-gray-600 mb-1">
+                    Ruangan Penempatan
+                    <span class="text-xs text-red-500 font-normal italic">*Gunakan mutasi untuk pindah</span>
+                </label>
+                {{-- Tambahkan atribut disabled dan ubah warna background jadi abu-abu --}}
+                <select id="edit_room_id" disabled class="w-full border border-gray-200 rounded px-3 py-2 text-sm bg-gray-100 text-gray-500 cursor-not-allowed">
                     <option value="">Pilih Ruangan Penempatan</option>
                     @foreach ($rooms->groupBy('branch.code') as $branchCode => $branchRooms)
                         <optgroup label="Cabang {{ $branchCode }}">
@@ -463,6 +467,8 @@
                         </optgroup>
                     @endforeach
                 </select>
+                {{-- WAJIB: Tambahkan input hidden ini agar ID ruangan tetap terkirim ke backend --}}
+                <input type="hidden" name="room_id" id="edit_room_id_hidden">
             </div>
 
             <div>
@@ -590,6 +596,7 @@
                     'edit_name': name,
                     'edit_category_id': categoryId,
                     'edit_room_id': roomId,
+                    'edit_room_id_hidden': roomId,
                     'edit_condition': condition
                 };
 
