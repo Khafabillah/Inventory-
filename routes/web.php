@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\AssetController;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\RuanganController;
 
 Route::get('/login', function () {
     return view('auth.login');
@@ -117,3 +118,9 @@ Route::get('/master-data/akun', [UserController::class, 'index'])->name('master.
 Route::post('/master-data/akun', [UserController::class, 'store'])->name('master.akun.store');
 Route::put('/master-data/akun/{id}', [UserController::class, 'update'])->name('master.akun.update');
 Route::delete('/master-data/akun/{id}', [UserController::class, 'destroy'])->name('master.akun.destroy');
+
+// Route Master Data - Ruangan
+Route::get('/master-data/ruangan', [RuanganController::class, 'index'])->name('master.ruangan');
+Route::post('/master-data/ruangan', [RuanganController::class, 'store'])->name('master.ruangan.store');
+Route::put('/master-data/ruangan/{id}', [RuanganController::class, 'update']);
+Route::delete('/master-data/ruangan/{id}', [RuanganController::class, 'destroy']);

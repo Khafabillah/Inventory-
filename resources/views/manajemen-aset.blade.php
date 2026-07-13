@@ -40,8 +40,12 @@
 
             {{-- 2. Kolom Pencarian & Tombol Tambah --}}
             <div class="flex gap-3 mb-6 items-stretch h-[46px]">
+
+                {{-- Tambahkan onkeydown di input ini --}}
                 <input type="text" name="search" value="{{ request('search') }}" placeholder="Search"
+                    onkeydown="if(event.key === 'Enter'){ event.preventDefault(); this.form.submit(); }"
                     class="flex-1 rounded-full border border-gray-200 px-3 py-2 text-sm text-gray-700 focus:outline-none" />
+
                 <button type="button" onclick="toggleModal('modalTambahAset')"
                     class="cursor-pointer rounded-[1.5rem] bg-[#D5E7FD] flex flex-col items-center justify-center px-4">
                     <span class="text-base font-bold leading-none text-[#006EC4]">+</span>
@@ -209,6 +213,7 @@
                     </svg>
                     <input type="text" name="search" value="{{ request('search') }}" placeholder="Search"
                         class="w-40 text-sm text-gray-700 placeholder:text-gray-400 bg-transparent focus:outline-none" />
+                        <button type="submit" class="hidden"></button>
                 </div>
 
                 <div class=" ml-7 flex flex-wrap gap-2">
@@ -457,7 +462,8 @@
                     <span class="text-xs text-red-500 font-normal italic">*Gunakan mutasi untuk pindah</span>
                 </label>
                 {{-- Tambahkan atribut disabled dan ubah warna background jadi abu-abu --}}
-                <select id="edit_room_id" disabled class="w-full border border-gray-200 rounded px-3 py-2 text-sm bg-gray-100 text-gray-500 cursor-not-allowed">
+                <select id="edit_room_id" disabled
+                    class="w-full border border-gray-200 rounded px-3 py-2 text-sm bg-gray-100 text-gray-500 cursor-not-allowed">
                     <option value="">Pilih Ruangan Penempatan</option>
                     @foreach ($rooms->groupBy('branch.code') as $branchCode => $branchRooms)
                         <optgroup label="Cabang {{ $branchCode }}">
