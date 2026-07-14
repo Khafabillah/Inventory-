@@ -8,11 +8,15 @@
         </div>
 
         <div class="flex items-center gap-3 mb-10 pb-6 border-b border-gray-300">
-            <img src="https://ui-avatars.com/api/?name=Mathias+W&background=006EC4&color=fff&bold=true" class="w-10 h-10 rounded-full">
+            {{-- Avatar Dinamis --}}
+            <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name ?? 'Guest') }}&background=006EC4&color=fff&bold=true" class="w-10 h-10 rounded-full">
+
             <div class="flex-1">
-                <p class="text-sm font-bold text-gray-900">Mathias W.</p>
-                <p class="text-[10px] text-gray-600">Store Manager</p>
+                {{-- Nama & Email Dinamis --}}
+                <p class="text-sm font-bold text-gray-900">{{ auth()->user()->name ?? 'Guest' }}</p>
+                <p class="text-[10px] text-gray-600">{{ auth()->user()->email ?? 'No Email' }}</p>
             </div>
+
             <button onclick="showLogoutModal(); toggleMobileSidebar();" class="text-xl text-gray-600 active:scale-75 transition-transform">➔</button>
         </div>
 
@@ -20,7 +24,7 @@
             {{-- Dashboard --}}
             <a href="/dashboard" class="flex items-center gap-4 py-3 {{ request()->is('dashboard') ? 'border-l-4 border-[#FFCD29] bg-white/40' : 'border-l-4 border-transparent' }} rounded-r-lg active:scale-[0.98] transition-transform">
                 <span class="ml-4 {{ request()->is('dashboard') ? 'text-[#FFCD29]' : 'text-[#006EC4]' }}">■</span>
-                <span class="font-bold text-gray-900">Dashboard</span>
+                <span class="font-bold {{ request()->is('dashboard') ? 'text-gray-900' : 'text-gray-700' }}">Dashboard</span>
             </a>
 
             {{-- Manajemen Aset --}}
@@ -36,9 +40,9 @@
             </a>
 
             {{-- Log Aktivitas --}}
-            <a href="#" class="flex items-center gap-4 py-3 border-l-4 border-transparent text-[#006EC4] active:bg-blue-300/30 active:scale-[0.98] transition-all">
-                <span class="ml-4 text-[#006EC4]">■</span>
-                <span class="font-medium text-gray-700">Log Aktivitas</span>
+            <a href="/log-aktivitas" class="flex items-center gap-4 py-3 {{ request()->is('log-aktivitas') ? 'border-l-4 border-[#FFCD29] bg-white/40' : 'border-l-4 border-transparent' }} rounded-r-lg active:scale-[0.98] transition-all">
+                <span class="ml-4 {{ request()->is('log-aktivitas') ? 'text-[#FFCD29]' : 'text-[#006EC4]' }}">■</span>
+                <span class="font-medium {{ request()->is('log-aktivitas') ? 'text-gray-900 font-bold' : 'text-gray-700' }}">Log Aktivitas</span>
             </a>
 
             {{-- Scanner --}}

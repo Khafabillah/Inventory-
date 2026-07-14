@@ -56,8 +56,8 @@
             </div>
         </a>
         {{-- Tab Kategori --}}
-        <button
-            class="px-6 py-2 text-xs font-bold bg-white border border-gray-200 text-gray-500 hover:bg-gray-50 rounded-full transition-colors cursor-not-allowed">
+        <a href="{{ route('master.kategori') }}"
+            class="px-6 py-2 text-xs font-bold bg-white border border-gray-200 text-gray-500 hover:bg-gray-50 rounded-full transition-colors cursor-pointer active:scale-95">
             <div class="flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor" stroke-width="2">
@@ -66,7 +66,7 @@
                 </svg>
                 Kategori
             </div>
-        </button>
+        </a>
     </div>
 
     {{-- ========================================================== --}}

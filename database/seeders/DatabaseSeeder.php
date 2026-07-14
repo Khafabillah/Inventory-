@@ -31,27 +31,39 @@ class DatabaseSeeder extends Seeder
         $kodeCabang = ['WML', 'WLD', 'WLS', 'TOSS', 'WLP'];
         $ruanganStandar = ['Showroom', 'Bengkel', 'Gudang Sparepart', 'Front Office', 'Lounge VIP'];
 
+        // Daftar nama barang acak untuk bypass Factory
+        $namaBarang = ['Komputer Kasir', 'Sofa Tunggu', 'Meja Resepsionis', 'Tool Kit Set', 'AC Daikin 2 PK'];
+        $kondisiBarang = ['Baik', 'Kurang Baik', 'Rusak'];
+
         foreach ($kodeCabang as $kode) {
-            // Buat Cabangnya
             $branch = Branch::firstOrCreate(
                 ['code' => $kode],
                 ['name' => "Dealer Toyota $kode"]
             );
 
-            // Buat Ruangannya untuk Cabang tersebut
+            // Counter khusus per cabang agar urut sempurna (001, 002, 003...)
+            $branchCounter = 1;
+
             foreach ($ruanganStandar as $namaRuangan) {
                 $room = Room::firstOrCreate([
                     'branch_id' => $branch->id,
                     'name' => $namaRuangan
                 ]);
 
-                // 4. Cetak 10 hingga 15 Aset secara acak per ruangan!
                 $jumlahAset = rand(10, 15);
 
                 for ($i = 0; $i < $jumlahAset; $i++) {
-                    Asset::factory()->create([
+                    // Generate kode (Contoh: WML-001)
+                    $seq = str_pad($branchCounter++, 3, '0', STR_PAD_LEFT);
+                    $assetCode = "{$branch->code}-{$seq}";
+
+                    // Buat aset LANGSUNG tanpa memanggil Factory
+                    Asset::create([
                         'room_id' => $room->id,
                         'category_id' => $categories[array_rand($categories)]->id,
+                        'asset_code' => $assetCode,
+                        'name' => $namaBarang[array_rand($namaBarang)],
+                        'condition' => $kondisiBarang[array_rand($kondisiBarang)],
                     ]);
                 }
             }
