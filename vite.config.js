@@ -10,4 +10,9 @@ export default defineConfig({
         }),
         tailwindcss(),
     ],
+    server: {
+        // Konfigurasi ini memungkinkan Vite diakses dari perangkat lain (HP)
+        // melalui IP Lokal laptop Anda.
+        host: "0.0.0.0",
+    },
 });

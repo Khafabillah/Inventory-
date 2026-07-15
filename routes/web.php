@@ -112,4 +112,9 @@ Route::middleware(['auth'])->group(function () {
 
     // Log Aktivitas
     Route::get('/log-aktivitas', [LogController::class, 'index'])->name('log-aktivitas');
+
+    // Scanner (Khusus Mobile)
+    Route::get('/scanner', function () {
+        return view('scanner');
+    })->name('scanner');
 });
