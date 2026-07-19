@@ -128,9 +128,8 @@
             let isFlashOn = false;
 
             const config = {
-                fps: 10,
-                qrbox: { width: 250, height: 250 },
-                aspectRatio: 1.0
+                fps: 15,
+                disableFlip: false
             };
 
             // FIX LOGIKA DETEKSI SAPU JAGAT (Pasti Muncul Modal)
