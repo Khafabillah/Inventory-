@@ -1,53 +1,58 @@
 @extends('layouts.app')
 
 @section('content')
+    {{-- CSS Kustom untuk memaksa tampilan --}}
+    <style>
+        /* Membunuh UI kotak putih bawaan library */
+        #qr-shaded-region { display: none !important; }
+
+        /* Memaksa video agar benar-benar full menutupi layar */
+        #reader video {
+            object-fit: cover !important;
+            width: 100% !important;
+            height: 100vh !important;
+        }
+
+        /* Menghilangkan border bawaan library jika ada */
+        #reader { border: none !important; }
+    </style>
+
+    {{-- Input file tersembunyi untuk fitur Galeri --}}
+    <input type="file" id="gallery-input" class="hidden" accept="image/*">
+
     {{-- ================= KANVAS SCANNER CUSTOM (FIGMA DESIGN) ================= --}}
-    <div class="relative bg-black h-[calc(100vh-60px)] min-h-[85vh] w-full overflow-hidden flex flex-col items-center">
+    {{-- Menggunakan 'fixed' agar lepas dari padding parent (layouts.app) dan menutupi layar bawah navbar --}}
+    <div class="fixed top-[60px] bottom-0 left-0 right-0 bg-black z-40 overflow-hidden flex flex-col items-center justify-center">
 
         {{-- Tempat Video Kamera Dirender --}}
-        <div id="reader" class="absolute inset-0 w-full h-full object-cover"></div>
+        <div id="reader" class="absolute inset-0 w-full h-full"></div>
 
         {{-- Overlay Gelap di Luar Kotak Scan (Efek Fokus) --}}
-        <div class="absolute inset-0 pointer-events-none border-[50px] border-black/60 z-10"></div>
+        <div class="absolute inset-0 pointer-events-none border-[50px] border-black/70 z-10"></div>
 
         {{-- Tombol Ikon Atas (Flash, Gallery, Switch Camera) --}}
-        <div class="absolute top-8 w-full flex justify-center gap-4 z-20">
-            <button class="bg-gray-800/80 p-2.5 rounded-lg border border-gray-600 text-[#38BDF8] hover:bg-gray-700">
+        <div class="absolute top-8 w-full flex justify-center gap-5 z-20">
+            <button id="btn-flash" class="bg-gray-800/80 p-3 rounded-xl border border-gray-600 text-[#38BDF8] hover:bg-gray-700 transition-colors">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
             </button>
-            <button class="bg-gray-800/80 p-2.5 rounded-lg border border-gray-600 text-[#38BDF8] hover:bg-gray-700">
+            <button id="btn-gallery" class="bg-gray-800/80 p-3 rounded-xl border border-gray-600 text-[#38BDF8] hover:bg-gray-700 transition-colors">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
             </button>
-            <button class="bg-gray-800/80 p-2.5 rounded-lg border border-gray-600 text-[#38BDF8] hover:bg-gray-700">
+            <button id="btn-switch" class="bg-gray-800/80 p-3 rounded-xl border border-gray-600 text-[#38BDF8] hover:bg-gray-700 transition-colors">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
             </button>
         </div>
 
         {{-- Kotak Area Target & Garis Merah Laser --}}
-        <div class="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
-            <div class="w-60 h-60 border-2 border-[#38BDF8] rounded-xl relative overflow-hidden flex flex-col justify-center">
-                <div class="w-full h-[2px] bg-red-600 shadow-[0_0_8px_3px_rgba(220,38,38,0.8)]"></div>
+        <div class="absolute flex items-center justify-center pointer-events-none z-20">
+            <div class="w-64 h-64 border-2 border-[#38BDF8] rounded-xl relative overflow-hidden flex flex-col justify-center">
+                <div class="w-full h-[2px] bg-red-600 shadow-[0_0_10px_3px_rgba(220,38,38,0.9)] animate-pulse"></div>
             </div>
-        </div>
-
-        {{-- Slider Zoom (Tampilan Visual Saja) --}}
-        <div class="absolute bottom-28 w-full flex items-center justify-center px-12 gap-3 z-20 text-white font-bold">
-            <span>-</span>
-            <input type="range" class="w-full h-1 bg-gray-600 rounded-lg appearance-none cursor-pointer accent-[#38BDF8]">
-            <span>+</span>
-        </div>
-
-        {{-- Tombol Scan Bawah --}}
-        <div class="absolute bottom-10 z-20">
-            <button class="bg-[#38BDF8] p-4 rounded-xl shadow-[0_0_15px_rgba(56,189,248,0.5)]">
-                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-            </button>
         </div>
     </div>
 
     {{-- ================= OVERLAY MODAL ================= --}}
-    <div id="modal-overlay"
-        class="hidden fixed inset-0 z-50 bg-black/60 flex items-center justify-center px-4 font-inter backdrop-blur-sm transition-opacity">
+    <div id="modal-overlay" class="hidden fixed inset-0 z-50 bg-black/60 flex items-center justify-center px-4 font-inter backdrop-blur-sm transition-opacity">
 
         {{-- 1. MODAL: SCANNING BERHASIL --}}
         <div id="modal-success" class="hidden bg-white rounded-2xl w-full max-w-sm p-6 shadow-xl relative">
@@ -70,123 +75,19 @@
                     <label class="block text-xs text-gray-500 mb-1">Kode Aset</label>
                     <div class="bg-gray-100 p-2.5 rounded-lg text-gray-700 font-medium" id="txt-kode">INV-001</div>
                 </div>
-                <div>
-                    <label class="block text-xs text-gray-500 mb-1">Nama Aset</label>
-                    <div class="bg-gray-100 p-2.5 rounded-lg text-gray-700 font-medium" id="txt-nama">Laptop ASUS ROG</div>
-                </div>
-                <div>
-                    <label class="block text-xs text-gray-500 mb-1">Merek</label>
-                    <div class="bg-gray-100 p-2.5 rounded-lg text-gray-700 font-medium" id="txt-merek">ASUS</div>
-                </div>
-                <div>
-                    <label class="block text-xs text-gray-500 mb-1">Kondisi</label>
-                    <div class="bg-gray-100 p-2.5 rounded-lg text-gray-700 font-medium" id="txt-kondisi">Baik</div>
-                </div>
             </div>
 
             <div class="grid grid-cols-2 gap-3">
-                <button onclick="openEditModal()"
-                    class="w-full bg-[#006EC4] text-white py-2.5 rounded-lg font-bold text-sm hover:bg-blue-700 transition">Edit</button>
-                <button onclick="openMutasiModal()"
-                    class="w-full bg-[#FBBF24] text-white py-2.5 rounded-lg font-bold text-sm hover:bg-yellow-500 transition">Mutasi</button>
-            </div>
-        </div>
-
-        {{-- 2. MODAL: EDIT DETAIL ASET --}}
-        <div id="modal-edit" class="hidden bg-white rounded-2xl w-full max-w-sm p-6 shadow-xl relative">
-            <button onclick="closeModal()"
-                class="absolute top-4 right-4 text-yellow-500 hover:text-yellow-600 font-bold">X</button>
-            <h3 class="text-[#006EC4] font-bold text-base mb-5">Edit Detail Aset</h3>
-
-            <div class="space-y-4 mb-6 text-sm">
-                <div>
-                    <label class="block text-xs text-gray-500 mb-1">Kode Aset (Read Only)</label>
-                    <input type="text"
-                        class="w-full bg-gray-100 p-2.5 rounded-lg text-gray-500 border border-gray-200 outline-none"
-                        value="INV-001" readonly>
-                </div>
-                <div>
-                    <label class="block text-xs text-gray-500 mb-1">Nama Aset</label>
-                    <input type="text"
-                        class="w-full bg-white p-2.5 rounded-lg text-gray-800 border border-gray-300 focus:border-[#006EC4] outline-none"
-                        value="Laptop ASUS ROG">
-                </div>
-                <div>
-                    <label class="block text-xs text-gray-500 mb-1">Merek</label>
-                    <select
-                        class="w-full bg-white p-2.5 rounded-lg text-gray-800 border border-gray-300 focus:border-[#006EC4] outline-none appearance-none">
-                        <option>ASUS</option>
-                        <option>Lenovo</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-xs text-gray-500 mb-1">Kondisi</label>
-                    <select
-                        class="w-full bg-white p-2.5 rounded-lg text-gray-800 border border-gray-300 focus:border-[#006EC4] outline-none appearance-none">
-                        <option>Baik</option>
-                        <option>Rusak</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-3">
-                <button onclick="backToSuccessModal()"
-                    class="w-full bg-gray-400 text-white py-2.5 rounded-lg font-bold text-sm hover:bg-gray-500 transition">Batal</button>
-                <button onclick="closeModal()"
-                    class="w-full bg-[#006EC4] text-white py-2.5 rounded-lg font-bold text-sm hover:bg-blue-700 transition">Simpan</button>
-            </div>
-        </div>
-
-        {{-- 3. MODAL: MUTASI LOKASI --}}
-        <div id="modal-mutasi" class="hidden bg-white rounded-2xl w-full max-w-sm p-6 shadow-xl relative">
-            <button onclick="closeModal()"
-                class="absolute top-4 right-4 text-yellow-500 hover:text-yellow-600 font-bold">X</button>
-            <h3 class="text-[#006EC4] font-bold text-base mb-5">Mutasi/Lokasi Aset</h3>
-
-            <div class="space-y-4 mb-6 text-sm">
-                <div>
-                    <label class="block text-xs text-gray-500 mb-1">Kode Aset</label>
-                    <input type="text"
-                        class="w-full bg-gray-100 p-2.5 rounded-lg text-gray-500 border border-gray-200 outline-none"
-                        value="INV-001" readonly>
-                </div>
-                <div>
-                    <label class="block text-xs text-gray-500 mb-1">Nama Aset</label>
-                    <input type="text"
-                        class="w-full bg-gray-100 p-2.5 rounded-lg text-gray-500 border border-gray-200 outline-none"
-                        value="Laptop ASUS ROG" readonly>
-                </div>
-                <div>
-                    <label class="block text-xs text-gray-500 mb-1">Penanggung Jawab</label>
-                    <input type="text"
-                        class="w-full bg-white p-2.5 rounded-lg text-gray-800 border border-gray-300 focus:border-[#006EC4] outline-none"
-                        value="Budi Santoso">
-                </div>
-                <div>
-                    <label class="block text-xs text-gray-500 mb-1">Pindah Lokasi</label>
-                    <select
-                        class="w-full bg-white p-2.5 rounded-lg text-gray-800 border border-gray-300 focus:border-[#006EC4] outline-none appearance-none">
-                        <option>R. Komputer 1</option>
-                        <option>R. Guru</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-3">
-                <button onclick="backToSuccessModal()"
-                    class="w-full bg-gray-400 text-white py-2.5 rounded-lg font-bold text-sm hover:bg-gray-500 transition">Batal</button>
-                <button onclick="closeModal()"
-                    class="w-full bg-[#FBBF24] text-white py-2.5 rounded-lg font-bold text-sm hover:bg-yellow-500 transition">Mutasi</button>
+                <button class="w-full bg-[#006EC4] text-white py-2.5 rounded-lg font-bold text-sm hover:bg-blue-700 transition">Edit</button>
+                <button class="w-full bg-[#FBBF24] text-white py-2.5 rounded-lg font-bold text-sm hover:bg-yellow-500 transition">Mutasi</button>
             </div>
         </div>
     </div>
 
     {{-- TOAST ERROR: Aset Tidak Ditemukan --}}
-    <div id="toast-error"
-        class="hidden fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-red-600 text-white px-5 py-3 rounded-lg shadow-lg flex items-center gap-3 z-50 transition-all font-inter font-medium text-sm">
+    <div id="toast-error" class="hidden fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-red-600 text-white px-5 py-3 rounded-lg shadow-lg flex items-center gap-3 z-50 transition-all font-inter font-medium text-sm">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
         </svg>
         Aset Tidak Ditemukan!
     </div>
@@ -197,78 +98,34 @@
         // === FUNGSI KONTROL MODAL ===
         const overlay = document.getElementById('modal-overlay');
         const modalSuccess = document.getElementById('modal-success');
-        const modalEdit = document.getElementById('modal-edit');
-        const modalMutasi = document.getElementById('modal-mutasi');
         const toastError = document.getElementById('toast-error');
-
-        function hideAllModals() {
-            modalSuccess.classList.add('hidden');
-            modalEdit.classList.add('hidden');
-            modalMutasi.classList.add('hidden');
-        }
 
         function closeModal() {
             overlay.classList.add('hidden');
-            hideAllModals();
-
-            // Lanjutkan (resume) kamera setelah modal ditutup
+            modalSuccess.classList.add('hidden');
             if (window.html5QrCodeInstance && window.html5QrCodeInstance.getState() === 3) {
                 window.html5QrCodeInstance.resume();
             }
         }
 
         function showSuccessModal(decodedText) {
-            hideAllModals();
             overlay.classList.remove('hidden');
             modalSuccess.classList.remove('hidden');
-
-            // Memasukkan kode hasil scan ke dalam Modal
             document.getElementById('txt-kode').innerText = decodedText;
-        }
-
-        function openEditModal() {
-            hideAllModals();
-            modalEdit.classList.remove('hidden');
-        }
-
-        function openMutasiModal() {
-            hideAllModals();
-            modalMutasi.classList.remove('hidden');
-        }
-
-        function backToSuccessModal() {
-            hideAllModals();
-            modalSuccess.classList.remove('hidden');
         }
 
         function showErrorToast() {
             toastError.classList.remove('hidden');
-            setTimeout(() => {
-                toastError.classList.add('hidden');
-            }, 3000);
+            setTimeout(() => { toastError.classList.add('hidden'); }, 3000);
         }
 
-        // === LOGIKA SCANNER CUSTOM (CAMERA BELAKANG) ===
+        // === LOGIKA SCANNER & FUNGSI TOMBOL ===
         document.addEventListener('DOMContentLoaded', function() {
-
-            // Menggunakan Class Inti Html5Qrcode (Bukan Scanner)
             const html5QrCode = new Html5Qrcode("reader");
+            window.html5QrCodeInstance = html5QrCode;
 
-            function onScanSuccess(decodedText, decodedResult) {
-                // Pause kamera seketika saat barcode terbaca
-                if (html5QrCode.getState() !== 3) {
-                    html5QrCode.pause();
-                }
-
-                // Logika: Jika mengandung kata 'INV' tampilkan modal sukses
-                if (decodedText.includes('INV')) {
-                    showSuccessModal(decodedText);
-                } else {
-                    showErrorToast();
-                    // Jika gagal/error, nyalakan lagi kameranya setelah 3 detik
-                    setTimeout(() => html5QrCode.resume(), 3000);
-                }
-            }
+            let currentFacingMode = "environment"; // Default kamera belakang
+            let isFlashOn = false;
 
             const config = {
                 fps: 10,
@@ -276,18 +133,97 @@
                 aspectRatio: 1.0
             };
 
-            // Memaksa penggunaan kamera belakang (environment)
-            html5QrCode.start(
-                { facingMode: "environment" },
-                config,
-                onScanSuccess
-            ).catch((err) => {
-                console.error("Gagal memulai kamera: ", err);
-                alert("Kamera belakang tidak ditemukan, atau izin akses ditolak.");
+            function onScanSuccess(decodedText, decodedResult) {
+                if (html5QrCode.getState() !== 3) { html5QrCode.pause(); }
+                if (decodedText.includes('INV')) {
+                    showSuccessModal(decodedText);
+                } else {
+                    showErrorToast();
+                    setTimeout(() => html5QrCode.resume(), 3000);
+                }
+            }
+
+            // Fungsi untuk memulai kamera
+            function startKamera() {
+                html5QrCode.start(
+                    { facingMode: currentFacingMode },
+                    config,
+                    onScanSuccess
+                ).catch((err) => {
+                    console.error("Kamera gagal:", err);
+                });
+            }
+
+            // Mulai kamera pertama kali
+            startKamera();
+
+            // 1. FUNGSI SWITCH CAMERA (Putar Kamera)
+            document.getElementById('btn-switch').addEventListener('click', async () => {
+                try {
+                    await html5QrCode.stop(); // Matikan dulu
+                    currentFacingMode = (currentFacingMode === "environment") ? "user" : "environment";
+                    startKamera(); // Nyalakan dengan mode baru
+                } catch (err) {
+                    console.error("Gagal menukar kamera", err);
+                }
             });
 
-            // Menyimpan instance ke window agar bisa diakses oleh fungsi closeModal()
-            window.html5QrCodeInstance = html5QrCode;
+            // 2. FUNGSI GALERI (Upload Gambar)
+            const galleryInput = document.getElementById('gallery-input');
+            document.getElementById('btn-gallery').addEventListener('click', () => {
+                galleryInput.click();
+            });
+
+            galleryInput.addEventListener('change', async (e) => {
+                if (e.target.files.length === 0) return;
+                const file = e.target.files[0];
+                try {
+                    // Berhentikan sementara kamera hidup jika baca file
+                    if(html5QrCode.isScanning) { await html5QrCode.stop(); }
+
+                    const decodedText = await html5QrCode.scanFile(file, true);
+                    showSuccessModal(decodedText);
+
+                    // Nyalakan ulang kamera setelah baca gambar
+                    startKamera();
+                } catch (err) {
+                    showErrorToast();
+                    startKamera(); // Nyalakan ulang kalau gambar gagal dibaca
+                }
+            });
+
+            // 3. FUNGSI FLASH LAMPU SENTER
+            document.getElementById('btn-flash').addEventListener('click', async () => {
+                const btnFlash = document.getElementById('btn-flash');
+                try {
+                    // Dapatkan track video yang sedang berjalan
+                    const videoTrack = html5QrCode.getVideoTrack();
+                    if (videoTrack && typeof videoTrack.getCapabilities === 'function') {
+                        const capabilities = videoTrack.getCapabilities();
+                        if (capabilities.torch) {
+                            isFlashOn = !isFlashOn;
+                            await videoTrack.applyConstraints({
+                                advanced: [{ torch: isFlashOn }]
+                            });
+                            // Ubah warna tombol jika menyala
+                            if(isFlashOn) {
+                                btnFlash.classList.replace('text-[#38BDF8]', 'text-white');
+                                btnFlash.classList.replace('bg-gray-800/80', 'bg-blue-500');
+                            } else {
+                                btnFlash.classList.replace('text-white', 'text-[#38BDF8]');
+                                btnFlash.classList.replace('bg-blue-500', 'bg-gray-800/80');
+                            }
+                        } else {
+                            alert("Kamera Anda tidak memiliki flash atau tidak diizinkan oleh browser Safari.");
+                        }
+                    } else {
+                        alert("Fitur flash tidak didukung di perangkat ini.");
+                    }
+                } catch (err) {
+                    alert("Gagal menyalakan flash: Sistem operasi membatasi akses.");
+                }
+            });
+
         });
     </script>
 @endsection
