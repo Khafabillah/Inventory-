@@ -21,17 +21,18 @@
     <input type="file" id="gallery-input" class="hidden" accept="image/*">
 
     {{-- ================= KANVAS SCANNER CUSTOM (FIGMA DESIGN) ================= --}}
-    {{-- Menggunakan 'fixed' agar lepas dari padding parent (layouts.app) dan menutupi layar bawah navbar --}}
     <div class="fixed top-[60px] bottom-0 left-0 right-0 bg-black z-40 overflow-hidden flex flex-col items-center justify-center">
 
         {{-- Tempat Video Kamera Dirender --}}
         <div id="reader" class="absolute inset-0 w-full h-full"></div>
 
         {{-- Overlay Gelap di Luar Kotak Scan (Efek Fokus) --}}
-        <div class="absolute inset-0 pointer-events-none border-[50px] border-black/70 z-10"></div>
+        {{-- FIX TOMBOL NABRAK: Atas-bawah 120px (tebal), kiri-kanan 50px --}}
+        <div class="absolute inset-0 pointer-events-none border-x-[50px] border-y-[120px] border-black/70 z-10"></div>
 
         {{-- Tombol Ikon Atas (Flash, Gallery, Switch Camera) --}}
-        <div class="absolute top-8 w-full flex justify-center gap-5 z-20">
+        {{-- Digeser sedikit ke top-10 biar persis di tengah area gelap atas --}}
+        <div class="absolute top-10 w-full flex justify-center gap-5 z-20">
             <button id="btn-flash" class="bg-gray-800/80 p-3 rounded-xl border border-gray-600 text-[#38BDF8] hover:bg-gray-700 transition-colors">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
             </button>
@@ -95,7 +96,6 @@
     {{-- Script HTML5-QRCode via CDN --}}
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <script>
-        // === FUNGSI KONTROL MODAL ===
         const overlay = document.getElementById('modal-overlay');
         const modalSuccess = document.getElementById('modal-success');
         const toastError = document.getElementById('toast-error');
@@ -133,17 +133,22 @@
                 aspectRatio: 1.0
             };
 
+            // FIX LOGIKA DETEKSI SAPU JAGAT (Pasti Muncul Modal)
             function onScanSuccess(decodedText, decodedResult) {
                 if (html5QrCode.getState() !== 3) { html5QrCode.pause(); }
-                if (decodedText.includes('INV')) {
-                    showSuccessModal(decodedText);
-                } else {
-                    showErrorToast();
-                    setTimeout(() => html5QrCode.resume(), 3000);
+
+                let kodeAset = decodedText;
+
+                // Jika hasil scan berupa Link/URL panjang, kita potong dan ambil ujungnya saja
+                if (kodeAset.includes('http') || kodeAset.includes('/')) {
+                    const parts = kodeAset.split('/');
+                    kodeAset = parts[parts.length - 1]; // Misal: mengambil "WML-038" dari URL
                 }
+
+                // Langsung tampilkan modal sukses, apapun isinya!
+                showSuccessModal(kodeAset);
             }
 
-            // Fungsi untuk memulai kamera
             function startKamera() {
                 html5QrCode.start(
                     { facingMode: currentFacingMode },
@@ -154,21 +159,20 @@
                 });
             }
 
-            // Mulai kamera pertama kali
             startKamera();
 
-            // 1. FUNGSI SWITCH CAMERA (Putar Kamera)
+            // 1. FUNGSI SWITCH CAMERA
             document.getElementById('btn-switch').addEventListener('click', async () => {
                 try {
-                    await html5QrCode.stop(); // Matikan dulu
+                    await html5QrCode.stop();
                     currentFacingMode = (currentFacingMode === "environment") ? "user" : "environment";
-                    startKamera(); // Nyalakan dengan mode baru
+                    startKamera();
                 } catch (err) {
                     console.error("Gagal menukar kamera", err);
                 }
             });
 
-            // 2. FUNGSI GALERI (Upload Gambar)
+            // 2. FUNGSI GALERI
             const galleryInput = document.getElementById('gallery-input');
             document.getElementById('btn-gallery').addEventListener('click', () => {
                 galleryInput.click();
@@ -178,25 +182,26 @@
                 if (e.target.files.length === 0) return;
                 const file = e.target.files[0];
                 try {
-                    // Berhentikan sementara kamera hidup jika baca file
                     if(html5QrCode.isScanning) { await html5QrCode.stop(); }
-
                     const decodedText = await html5QrCode.scanFile(file, true);
-                    showSuccessModal(decodedText);
 
-                    // Nyalakan ulang kamera setelah baca gambar
+                    let kodeAset = decodedText;
+                    if (kodeAset.includes('http') || kodeAset.includes('/')) {
+                        const parts = kodeAset.split('/');
+                        kodeAset = parts[parts.length - 1];
+                    }
+                    showSuccessModal(kodeAset);
                     startKamera();
                 } catch (err) {
                     showErrorToast();
-                    startKamera(); // Nyalakan ulang kalau gambar gagal dibaca
+                    startKamera();
                 }
             });
 
-            // 3. FUNGSI FLASH LAMPU SENTER
+            // 3. FUNGSI FLASH
             document.getElementById('btn-flash').addEventListener('click', async () => {
                 const btnFlash = document.getElementById('btn-flash');
                 try {
-                    // Dapatkan track video yang sedang berjalan
                     const videoTrack = html5QrCode.getVideoTrack();
                     if (videoTrack && typeof videoTrack.getCapabilities === 'function') {
                         const capabilities = videoTrack.getCapabilities();
@@ -205,7 +210,6 @@
                             await videoTrack.applyConstraints({
                                 advanced: [{ torch: isFlashOn }]
                             });
-                            // Ubah warna tombol jika menyala
                             if(isFlashOn) {
                                 btnFlash.classList.replace('text-[#38BDF8]', 'text-white');
                                 btnFlash.classList.replace('bg-gray-800/80', 'bg-blue-500');
@@ -223,7 +227,6 @@
                     alert("Gagal menyalakan flash: Sistem operasi membatasi akses.");
                 }
             });
-
         });
     </script>
 @endsection
