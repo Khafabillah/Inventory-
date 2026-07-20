@@ -180,15 +180,8 @@
             }
 
             function startKamera() {
-                html5QrCode.start({
-                        facingMode: currentFacingMode,
-                        width: {
-                            ideal: 1280
-                        }, // PAKSA KAMERA PAKAI RESOLUSI TINGGI
-                        height: {
-                            ideal: 720
-                        }
-                    },
+                html5QrCode.start(
+                    { facingMode: currentFacingMode },
                     config,
                     onScanSuccess
                 ).catch((err) => {
