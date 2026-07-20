@@ -86,9 +86,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get(
         '/aset/qr/{code}',
         fn($code) => response(
-            QrCode::size(150)
-                ->margin(1)
-                ->generate(route('manajemen-aset') . '?search=' . $code),
+            // Ukuran dibesarkan jadi 250 agar tajam, dan HANYA generate $code saja
+            QrCode::size(250)->margin(1)->generate($code),
         )->header('Content-Type', 'image/svg+xml'),
     );
 
