@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Auth\Events\Login;
+use Illuminate\Support\Facades\URL; // <-- Tambahkan baris ini
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,6 +22,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Paksa HTTPS jika aplikasi berjalan di production (Railway)
+        if (env('APP_ENV') !== 'local') {
+            URL::forceScheme('https');
+        }
+
         Event::listen(function (Login $event) {
             // Kita pastikan formatnya menggunakan cara standar Eloquent
             $user = $event->user;
