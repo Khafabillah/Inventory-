@@ -213,7 +213,7 @@
                     </svg>
                     <input type="text" name="search" value="{{ request('search') }}" placeholder="Search"
                         class="w-40 text-sm text-gray-700 placeholder:text-gray-400 bg-transparent focus:outline-none" />
-                        <button type="submit" class="hidden"></button>
+                    <button type="submit" class="hidden"></button>
                 </div>
 
                 <div class=" ml-7 flex flex-wrap gap-2">
@@ -404,12 +404,15 @@
     </x-modal>
 
     {{-- MODAL CETAK QR --}}
+    {{-- MODAL CETAK QR --}}
     <x-modal id="modalCetakQR" title="Cetak Label QR Code">
         <div class="flex flex-col items-center justify-center p-4">
             <div id="printArea"
-                class="bg-white border border-gray-200 shadow-sm rounded-xl p-8 flex flex-col items-center justify-center w-[280px] mb-6">
+                class="bg-white border border-gray-200 shadow-sm rounded-xl p-8 flex flex-col items-center justify-center w-[350px] mb-6">
+                {{-- LEBAR KOTAK DIPERBESAR JADI 350px --}}
                 <div class="font-bold text-gray-800 text-sm mb-4">Inventor<span class="text-[#FFCD29]">+</span></div>
-                <img id="qrImage" src="" alt="QR Code" class="mb-6 w-[120px] h-[120px]">
+                <img id="qrImage" src="" alt="QR Code" class="mb-6 w-[200px] h-[200px]">
+                {{-- GAMBAR QR DIPERBESAR JADI 200px --}}
                 <div id="qrAssetCode" class="text-sm font-bold text-gray-900"></div>
                 <div id="qrAssetName" class="text-xs text-gray-500 mt-1"></div>
                 <div id="qrAssetBranch" class="text-xs text-[#006EC4] mt-2 font-medium"></div>
