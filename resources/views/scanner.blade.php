@@ -56,12 +56,15 @@
 
         {{-- 1. MODAL: SCANNING BERHASIL --}}
         <div id="modal-success" class="hidden bg-white rounded-2xl w-full max-w-sm p-6 shadow-xl relative">
-            <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+
+            {{-- PERBAIKAN UI: Tombol Silang diposisikan bebas di pojok kanan atas --}}
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 bg-white rounded-full p-1 z-10">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
-            <div class="flex items-center justify-between mb-5">
-                <h3 class="text-[#006EC4] font-bold text-sm leading-tight pr-4">Scanning Berhasil,<br>Aset Ditemukan!</h3>
-                <div class="bg-green-100 p-1.5 rounded-full text-green-600">
+
+            <div class="flex items-center justify-between mb-5 pr-6">
+                <h3 class="text-[#006EC4] font-bold text-sm leading-tight">Scanning Berhasil,<br>Aset Ditemukan!</h3>
+                <div class="bg-green-100 p-1.5 rounded-full text-green-600 flex-shrink-0">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
                 </div>
             </div>
@@ -74,8 +77,9 @@
             </div>
 
             <div class="grid grid-cols-2 gap-3">
-                <button class="w-full bg-[#006EC4] text-white py-2.5 rounded-lg font-bold text-sm hover:bg-blue-700 transition">Edit</button>
-                <button class="w-full bg-[#FBBF24] text-white py-2.5 rounded-lg font-bold text-sm hover:bg-yellow-500 transition">Mutasi</button>
+                {{-- PERBAIKAN FUNGSIONAL: Diubah jadi Link (a), href akan diisi otomatis oleh JS --}}
+                <a href="#" id="btn-action-edit" class="w-full bg-[#006EC4] text-white py-2.5 rounded-lg font-bold text-sm hover:bg-blue-700 transition text-center inline-block">Cari Aset</a>
+                <a href="/manajemen-aset" class="w-full bg-[#FBBF24] text-white py-2.5 rounded-lg font-bold text-sm hover:bg-yellow-500 transition text-center inline-block">Ke Manajemen</a>
             </div>
         </div>
     </div>
@@ -104,10 +108,16 @@
             }
         }
 
-        function showSuccessModal(decodedText) {
+        function showSuccessModal(kodeAset) {
             overlay.classList.remove('hidden');
             modalSuccess.classList.remove('hidden');
-            document.getElementById('txt-kode').innerText = decodedText;
+
+            // Tampilkan kode di pop-up
+            document.getElementById('txt-kode').innerText = kodeAset;
+
+            // KUNCI PERBAIKAN: Arahkan tombol ke halaman Manajemen Aset dengan query pencarian (search)
+            const urlTujuan = `/manajemen-aset?search=${encodeURIComponent(kodeAset)}`;
+            document.getElementById('btn-action-edit').href = urlTujuan;
         }
 
         function showErrorToast() {
@@ -143,7 +153,6 @@
             }
 
             function startKamera() {
-                // NORMALISASI KAMERA: Cukup set facingMode saja, jangan dipaksa HD agar iOS tidak error
                 html5QrCode.start(
                     { facingMode: currentFacingMode },
                     config,

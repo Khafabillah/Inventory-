@@ -20,7 +20,8 @@ class MutationLog extends Model
 
     public function asset()
     {
-        return $this->belongsTo(Asset::class, 'asset_id');
+        // <-- Tambahan withTrashed() di ujung relasi
+        return $this->belongsTo(Asset::class, 'asset_id')->withTrashed();
     }
 
     public function fromRoom()
