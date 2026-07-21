@@ -50,11 +50,11 @@
                     </div>
                 </div>
 
-                {{-- <div class="flex items-center mb-6">
+                <div class="flex items-center mb-6">
                     <input type="checkbox" id="remember" class="mr-2"
                         onkeydown="if(event.key === 'Enter') { event.preventDefault(); this.checked = !this.checked; }">
                     <label for="remember" class="text-sm text-gray-600">Remember Me</label>
-                </div> --}}
+                </div>
 
                 <button type="submit"
                     class="w-full bg-yellow-400 hover:bg-yellow-500 text-white font-bold py-3 rounded-lg transition">
