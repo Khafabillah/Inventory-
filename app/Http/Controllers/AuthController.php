@@ -19,7 +19,11 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        if (Auth::attempt($credentials)) {
+        // 1. Tangkap status checkbox remember dari request (hasil fetch JS)
+        $remember = $request->boolean('remember');
+
+        // 2. Sisipkan $remember sebagai parameter kedua
+        if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
 
             // Perekaman aktivitas login ke tabel login_logs
@@ -29,15 +33,21 @@ class AuthController extends Controller
                 'user_agent' => $request->userAgent(),
             ]);
 
-            return response()->json([
-                'message' => 'Login berhasil',
-                'user' => Auth::user(),
-            ], 200);
+            return response()->json(
+                [
+                    'message' => 'Login berhasil',
+                    'user' => Auth::user(),
+                ],
+                200,
+            );
         }
 
-        return response()->json([
-            'message' => 'Email atau password salah',
-        ], 401);
+        return response()->json(
+            [
+                'message' => 'Email atau password salah',
+            ],
+            401,
+        );
     }
 
     /**
