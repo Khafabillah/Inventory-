@@ -76,6 +76,7 @@
 
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
+            const remember = document.getElementById('remember').checked;
             const tokenElement = document.querySelector('input[name="_token"]');
 
             try {
@@ -88,7 +89,8 @@
                     },
                     body: JSON.stringify({
                         email,
-                        password
+                        password,
+                        remember
                     })
                 });
 
@@ -108,20 +110,20 @@
         });
 
         const togglePassword = document.getElementById('togglePassword');
-    const passwordInput = document.getElementById('password');
+        const passwordInput = document.getElementById('password');
 
-    togglePassword.addEventListener('click', () => {
-        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-        passwordInput.setAttribute('type', type);
-    });
+        togglePassword.addEventListener('click', () => {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+        });
 
-    // Tambahkan event agar tombol mata bisa diklik dengan Enter
-    togglePassword.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            togglePassword.click();
-        }
-    });
+        // Tambahkan event agar tombol mata bisa diklik dengan Enter
+        togglePassword.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                togglePassword.click();
+            }
+        });
     </script>
 </body>
 
